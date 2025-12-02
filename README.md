@@ -190,3 +190,5 @@ The Gradio interface is launched with the command:
 # The final line of the app.py script
 .launch()
 ```
+
+This is the link to our space in Hugging Face: https://huggingface.co/spaces/Klariiii/Lab2_llama3.2-3b-q4k-finetome-wizardlm
