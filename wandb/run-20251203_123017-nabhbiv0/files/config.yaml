@@ -1,0 +1,50 @@
+_wandb:
+    value:
+        cli_version: 0.23.1
+        e:
+            nrx8r24lj4wmsvyykaj6a4xmnc6agjcd:
+                apple:
+                    ecpuCores: 4
+                    gpuCores: 20
+                    memoryGb: 24
+                    name: Apple M4 Pro
+                    pcpuCores: 10
+                    ramTotalBytes: "25769803776"
+                    swapTotalBytes: "1073741824"
+                codePath: /Users/karen/Klara-Ana_Lab2/Klara_Ana_Llama_3_2_3B_finetuning.ipynb
+                codePathLocal: Klara_Ana_Llama_3_2_3B_finetuning.ipynb
+                cpu_count: 14
+                cpu_count_logical: 14
+                disk:
+                    /:
+                        total: "994662584320"
+                        used: "557446856704"
+                email: anakaren.marqueze@gmail.com
+                executable: /opt/anaconda3/envs/aq/bin/python
+                git:
+                    commit: d696d57d65757234e3b9613b4b0eff09b30dd690
+                    remote: https://github.com/ana8413/Klara-Ana_Lab2.git
+                host: MacBook-Pro-2.local
+                memory:
+                    total: "25769803776"
+                os: macOS-15.6.1-arm64-arm-64bit
+                program: /Users/karen/Klara-Ana_Lab2/Klara_Ana_Llama_3_2_3B_finetuning.ipynb
+                python: CPython 3.10.15
+                root: /Users/karen/Klara-Ana_Lab2
+                startedAt: "2025-12-03T11:30:17.310934Z"
+                writerId: nrx8r24lj4wmsvyykaj6a4xmnc6agjcd
+        m: []
+        python_version: 3.10.15
+        t:
+            "1":
+                - 105
+            "2":
+                - 105
+            "3":
+                - 13
+            "4": 3.10.15
+            "5": 0.23.1
+            "8":
+                - 1
+            "12": 0.23.1
+            "13": darwin-arm64

@@ -1,0 +1,37 @@
+{
+  "os": "macOS-15.6.1-arm64-arm-64bit",
+  "python": "CPython 3.10.15",
+  "startedAt": "2025-12-03T11:30:17.310934Z",
+  "program": "/Users/karen/Klara-Ana_Lab2/Klara_Ana_Llama_3_2_3B_finetuning.ipynb",
+  "codePath": "/Users/karen/Klara-Ana_Lab2/Klara_Ana_Llama_3_2_3B_finetuning.ipynb",
+  "codePathLocal": "Klara_Ana_Llama_3_2_3B_finetuning.ipynb",
+  "git": {
+    "remote": "https://github.com/ana8413/Klara-Ana_Lab2.git",
+    "commit": "d696d57d65757234e3b9613b4b0eff09b30dd690"
+  },
+  "email": "anakaren.marqueze@gmail.com",
+  "root": "/Users/karen/Klara-Ana_Lab2",
+  "host": "MacBook-Pro-2.local",
+  "executable": "/opt/anaconda3/envs/aq/bin/python",
+  "cpu_count": 14,
+  "cpu_count_logical": 14,
+  "disk": {
+    "/": {
+      "total": "994662584320",
+      "used": "557446856704"
+    }
+  },
+  "memory": {
+    "total": "25769803776"
+  },
+  "apple": {
+    "name": "Apple M4 Pro",
+    "ecpuCores": 4,
+    "pcpuCores": 10,
+    "gpuCores": 20,
+    "memoryGb": 24,
+    "swapTotalBytes": "1073741824",
+    "ramTotalBytes": "25769803776"
+  },
+  "writerId": "nrx8r24lj4wmsvyykaj6a4xmnc6agjcd"
+}
