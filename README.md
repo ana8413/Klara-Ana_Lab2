@@ -39,11 +39,12 @@ The following core libraries were installed and used:
 
 The models were trained on a mix of data:
 1. **Model A** used `mlabonne/FineTome-100k $\approx 100,000$ samples
-2. **Model B** used `mlabonne/FineTome-100k`: $\approx 15,000$ samples.
-3. **Model C** used a blend of +mlabonne/FineTome-100k` $\approx 15,000$ samples and `WizardLMTeam/WizardLM_evol_instruct_70k` $\approx 15,000$ samples to increase the model's conversational capability.
+2. **Model B** used `mlabonne/FineTome-100k` $\approx 15,000$ samples.
+3. **Model C** used a blend of `mlabonne/FineTome-100k` $\approx 15,000$ samples and `WizardLMTeam/WizardLM_evol_instruct_70k` $\approx 15,000$ samples to increase the model's conversational capability.
 
 Furthermore, the mixed dataset was divided into a 95% training and 5% test. 
-*The testing percentage is low to use less memory since Google Colab has limited credits for the usage of TeslaT4.*
+
+*The testing percentage is kept low to reduce memory usage, as Google Colab provides limited credits for running on Tesla T4 GPUs.*
 
 ### Train/Test Split (Evaluation Stage)
 
@@ -78,6 +79,19 @@ Today Date: 26 July 2024
 
 The training was performed using Hugging Face TRL's `SFTTrainer` with modified hyperparameters to optimize performance.
 
+### Hyperparameter Tuning
+
+To achieve the lowest validation loss and most efficient use of the Tesla T4's limited VRAM, an iterative approach was necessary to tune the training parameters:
+
+* **Learning Rate (LR)**: We initially attempted to decrease the LR to $1.5 \times 10^{-4}$ to promote smoother training. When instability persisted, we further reduced it to $2 \times 10^{-5}$. While $2 \times 10^{-5}$ still showed some instability, a lower rate risked the model falling into overfitting. The final value of $2 \times 10^{-5}$ was chosen as the optimal trade-off.
+* **Warmup Steps**: The initial value was increased from 5 to 20 to ensure smooth training at the beginning. Since the dataset was reduced by more than 50% due to GPU issues, this value was later raised to 50 to help prevent hallucinations and divergence early in training.
+* **Maximum Steps (`max_steps`)**: The maximum steps were sequentially reduced from 60 to 50 and finally to 40. This reduction was critical because training for Model C (with added context) was taking too much time. This reduction served a dual purpose: saving time and helping to prevent overfitting, reducing hallucinations, and ensuring the model did not lose its general capabilities of conversation.
+* **Per-Device Training Batch Size (`per_device_train_batch_size`)**: We increased the batch size to better estimate the small dataset, speed up training, and reduce gradient variance for more stable updates. We fisrt settled a batch size of 4 and attempted to set it to 8, but the RAM constantly crashed. Therefore, we set the parameter to 4.
+* **Gradient Accumulation Steps**: Set to 4 to compensate for the small per-device batch size and successfully reach an effective batch size of 16 ($4 \times 4$) on the Google Colab 16 GB GPU.
+* **Logging Steps**: The logging frequency was progressively increased from 2 to 5 and finally to 10. This adjustment was made to track loss without spamming the console. Because callbacks and evaluation strategies added significant time overhead to each step, the interval was increased to 10 to improve speed while maintaining reasonable feedback quality. We chose not to raise it further to ensure the LLM still received enough data for meaningful feedback.
+* **Gradient Checkpointing**: This feature was added specifically to reduce memory usage. By saving strategically selected activations and re-computing only a fraction of gradients, it allowed us to scale our model from 20,000 to 30,000 samples, which was a primary goal.
+
+
 ### Callbacks and W\&B
 
 The training process incorporated a custom callback and Weights & Biases (W\&B) integration for enhanced control, monitoring, and visualization. A callback is an object that executes code at various stages of the training process.
@@ -87,14 +101,15 @@ The training process incorporated a custom callback and Weights & Biases (W\&B) 
     2.  Live Inference: At the end of each epoch, the system performs a live qualitative test by selecting a random prompt from a predefined evaluation list. The model’s response is printed directly to the logs.
   * **W\&B Integration**: W\&B was used to visualize all experiment metrics in real-time. The `report_to="wandb"` argument in `TrainingArguments` automatically sends all training results to the API.
 
-### Training Hyperparameters
+
+### Final Training Hyperparameters
 
 | Hyperparameter | Value | Explanation |
 | :--- | :--- | :--- |
-| **`per_device_train_batch_size`** | 4 | The number of samples processed per GPU in a single forward/backward pass. To speed up training, it was increased from 2 to 4. |
+| **`per_device_train_batch_size`** | 4 | The number of samples processed per GPU in a single forward/backward pass. |
 | **`gradient_accumulation_steps`** | 4 | The number of forward/backward passes before an optimization step. Set to achieve an batch size of 16 (4 \* 4) given the 16 GB VRAM constraint on the Tesla T4. |
-| **`max_steps`** | 40 | Reduced from 60 to prevent overfitting, preserve the model's general abilities, and allow a faster iteration loop. |
-| **`learning_rate`** | $2 \times 10^{-5}$ | Decreased from the common default of $1 \times 10^{-4}$ to avoid instability and overfitting, especially in the early training steps. |
+| **`max_steps`** | 40 | Reduced to prevent overfitting, preserve the model's general abilities, and allow a faster iteration loop. |
+| **`learning_rate`** | $2 \times 10^{-5}$ | Decreased to avoid instability and overfitting, especially in the early training steps. |
 | **`warmup_steps`** | 50 | The number of steps over which the learning rate increases from 0. It was increased to prevent divergence and "hallucinations" early in training by allowing the model to adapt smoothly. |
 | **`optim`** | `"adamw_8bit"` | An optimizer that keeps the full state and quantizes it, offering low precision but significant memory savings. |
 | **`weight_decay`** | 0.01 | Coefficient for L2 regularization, helps prevent the model from memorizing training data during fine-tuning. This value will help the model to prevent overfitting, improve stability during training, and improve generalization to long sequences|
