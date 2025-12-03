@@ -81,7 +81,9 @@ The training was performed using Hugging Face TRL's `SFTTrainer` with modified h
 
 ### Hyperparameter Tuning
 
-To achieve the lowest validation loss and most efficient use of the Tesla T4's limited VRAM, an iterative approach was necessary to tune the training parameters:
+The configurations of Model B and Model C were designed to achieve strong performance within the limits of available computing resources. A large-scale parameter search (using grid or random search) was initially planned to find globally optimal values, however, due to the substantial time requirements and the inherent limitations of the granted GPU resources (Tesla T4), this exhaustive exploration was infeasible. Instead, the optimization strategy focused on iteratively tuning key hyperparameters tied to stability, memory efficiency, and the project’s main goal: conversational quality. Adjustments to parameters such as the learning rate, warmup steps, and the use of gradient checkpointing, successfully mitigated resource bottlenecks and instability. This approach was validated by Model C, which achieved the lowest evaluation loss and demonstrated greater resource efficiency than less-optimized models.
+
+The following training parameters were tuned:
 
 * **Learning Rate (LR)**: We initially attempted to decrease the LR to $1.5 \times 10^{-4}$ to promote smoother training. When instability persisted, we further reduced it to $2 \times 10^{-5}$. While $2 \times 10^{-5}$ still showed some instability, a lower rate risked the model falling into overfitting. The final value of $2 \times 10^{-5}$ was chosen as the optimal trade-off.
 * **Warmup Steps**: The initial value was increased from 5 to 20 to ensure smooth training at the beginning. Since the dataset was reduced by more than 50% due to GPU issues, this value was later raised to 50 to help prevent hallucinations and divergence early in training.
