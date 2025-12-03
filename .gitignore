@@ -8,6 +8,3 @@ __pycache__/
 # Ignore notebook checkpoints
 .ipynb_checkpoints/
 
-# Ignore virtual environments
-.env/
-venv/
